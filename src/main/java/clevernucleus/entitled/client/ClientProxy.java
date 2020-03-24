@@ -1,21 +1,10 @@
 package clevernucleus.entitled.client;
 
-import clevernucleus.entitled.common.IProxy;
+import clevernucleus.entitled.common.util.IProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 public class ClientProxy implements IProxy {
-	private NBTTagList playerMap;
-	
-	@Override
-	public void preInit(FMLPreInitializationEvent par0) {}
-	
-	@Override
-	public void setPlayerMap(NBTTagList par0) {
-		playerMap = par0;
-	}
 	
 	@Override
 	public EntityPlayer getPlayer() {
@@ -23,7 +12,7 @@ public class ClientProxy implements IProxy {
 	}
 	
 	@Override
-	public NBTTagList getPlayerMap() {
-		return playerMap;
+	public String I18n(String par0) {
+		return net.minecraft.client.resources.I18n.format(par0);
 	}
 }

@@ -1,40 +1,27 @@
 package clevernucleus.entitled.common;
 
 import clevernucleus.entitled.common.capability.CapabilityTag;
-import clevernucleus.entitled.common.capability.CapabilityTagContainer;
-import clevernucleus.entitled.common.capability.ICapabilityTag;
-import clevernucleus.entitled.common.handler.NetworkHandler;
-import clevernucleus.entitled.common.handler.PlayerHandler;
-import net.minecraft.entity.player.EntityPlayer;
+import clevernucleus.entitled.common.event.CommonHandler;
+import clevernucleus.entitled.common.network.NetworkHandle;
+import clevernucleus.entitled.common.util.IProxy;
+import clevernucleus.entitled.common.util.Util;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
-public class Entitled implements IConstants {
+@Mod(modid = Util.MODID, name = Util.NAME, version = Util.VERSION)
+public class Entitled {
 	
-	@Mod(modid = MODID, name = NAME, version = VERSION)
-	public static class Core {
-		
-		@SidedProxy(clientSide = PROXY_CLIENT, serverSide = PROXY_SERVER)
-		public static IProxy proxy;
-		
-		@EventHandler
-		public void preInit(FMLPreInitializationEvent par0) {
-			CapabilityManager.INSTANCE.register(ICapabilityTag.class, new CapabilityTag.CapabilityTagHandler<>(), CapabilityTagContainer.class);
-			MinecraftForge.EVENT_BUS.register(new PlayerHandler());
-			
-			NetworkHandler.init();
-			
-			proxy.preInit(par0);
-		}
-	}
+	@SidedProxy(clientSide = Util.PROXY_CLIENT, serverSide = Util.PROXY_SERVER)
+	public static IProxy proxy;
 	
-	public static ICapabilityTag tag(EntityPlayer par0) {
-		ICapabilityTag var0 = par0.getCapability(CapabilityTag.TAG, null);
+	@EventHandler
+	public void preInit(FMLPreInitializationEvent par0) {
+		CapabilityTag.init();
+		NetworkHandle.init();
 		
-		return var0;
+		MinecraftForge.EVENT_BUS.register(new CommonHandler());
 	}
 }
