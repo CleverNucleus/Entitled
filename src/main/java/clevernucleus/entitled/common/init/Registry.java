@@ -2,11 +2,17 @@ package clevernucleus.entitled.common.init;
 
 import java.util.function.Function;
 
+import javax.annotation.Nonnull;
+
 import clevernucleus.entitled.common.Entitled;
 import clevernucleus.entitled.common.init.capability.ITag;
 import clevernucleus.entitled.common.init.capability.TagHandler;
 import clevernucleus.entitled.common.init.network.SyncTagPacket;
+import clevernucleus.entitled.common.util.NameTagRecipe;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
@@ -15,6 +21,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -37,6 +44,20 @@ public class Registry {
 	/** Tag capability pass-through function. */
 	public static final Function<PlayerEntity, LazyOptional<ITag>> TAG_FROM_PLAYER = var -> var.getCapability(TAG, null);
 	
+	public static final IRecipeSerializer<NameTagRecipe> CRAFTING_SPECIAL_NAME_TAG = register("name_tag_dye", new SpecialRecipeSerializer<>(NameTagRecipe::new));
+	
+	/**
+	 * Used to pass a special recipe serializer and its registry name through to a list and returned again.
+	 * @param par0 The registry name.
+	 * @param par1 The recipe serializer object.
+	 * @return The recipe serializer object, with its registry name set.
+	 */
+	private static <S extends IRecipeSerializer<T>, T extends IRecipe<?>> S register(final @Nonnull String par0, @Nonnull S par1) {
+		par1.setRegistryName(new ResourceLocation(Entitled.MODID, par0));
+		
+		return par1;
+	}
+	
 	/**
 	 * Mod initialisation event.
 	 * @param par0
@@ -57,5 +78,14 @@ public class Registry {
 		}, TagHandler::new);
 		
 		NETWORK.registerMessage(0, SyncTagPacket.class, SyncTagPacket::encode, SyncTagPacket::decode, SyncTagPacket::handle);
+	}
+	
+	/**
+	 * Event handling the registration of special recipe serializers.
+	 * @param par0
+	 */
+	@SubscribeEvent
+	public static void registerRecipeSerializers(final RegistryEvent.Register<IRecipeSerializer<?>> par0) {
+		par0.getRegistry().register(CRAFTING_SPECIAL_NAME_TAG);
 	}
 }
