@@ -129,4 +129,14 @@ public class TagHandler implements ITag {
 		
 		this.stack.set(0, ItemStack.read(par0.getCompound("Tag")));
 	}
+
+	@Override
+	public boolean isEmpty() {
+		return this.getStackInSlot(0) == ItemStack.EMPTY;
+	}
+	
+	@Override
+	public void clear() {
+		this.stack.set(0, ItemStack.EMPTY);
+	}
 }
