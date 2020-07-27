@@ -32,9 +32,7 @@ public class TagHandler implements ITag {
 	 * Fired when a change in the inventory is detected. Syncs to the server.
 	 * @param par0 Slot index.
 	 */
-	public void onContentsChanged(int par0) {
-		
-	}
+	public void onContentsChanged(int par0) {}
 	
 	@Override
 	public void setStackInSlot(final int par0, @Nonnull ItemStack par1) {

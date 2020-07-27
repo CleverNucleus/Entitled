@@ -81,6 +81,16 @@ public class ClientEvents {
 		}
 	}
 	
+	/**
+	 * Draws a nameplate above the entity (but below a player's nametag).
+	 * @param par0
+	 * @param par1
+	 * @param par2
+	 * @param par3
+	 * @param par4
+	 * @param par5
+	 * @param par6
+	 */
 	private static <T extends Entity> void renderTag(EntityRenderer<T> par0, T par1, String par2, MatrixStack par3, IRenderTypeBuffer par4, int par5, int par6) {
 		double var0 = par0.getRenderManager().squareDistanceTo(par1);
 		
