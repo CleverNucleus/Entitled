@@ -1,12 +1,24 @@
 package clevernucleus.entitled.client.event;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import clevernucleus.entitled.common.Entitled;
+import clevernucleus.entitled.common.util.Display;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.util.InputMappings;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -25,10 +37,11 @@ public class ClientEvents {
 	public static void onDrawTooltip(final ItemTooltipEvent par0) {
 		ItemStack var0 = par0.getItemStack();
 		
+		if(!isShiftDown()) return;
 		if(var0.getItem() == Items.NAME_TAG) {
 			if(var0.hasTag()) {
-				if(var0.getTag().contains("Colour")) {
-					CompoundNBT var1 = var0.getTag().getCompound("Colour");
+				if(var0.getTag().contains("colour")) {
+					CompoundNBT var1 = var0.getTag().getCompound("colour");
 					ItemStack var2 = ItemStack.read(var1);
 					
 					par0.getToolTip().add(new StringTextComponent(TextFormatting.GRAY + " -" + var2.getDisplayName().getFormattedText()));
@@ -39,5 +52,39 @@ public class ClientEvents {
 				par0.getToolTip().add(new StringTextComponent(TextFormatting.GRAY + " -" + var1.getDisplayName().getFormattedText()));
 			}
 		}
+	}
+	
+	/**
+	 * Main render event to used to draw nameplates.
+	 * @param par0
+	 */
+	@SubscribeEvent
+	public static void onRenderType(RenderLivingEvent.Post<LivingEntity, EntityModel<LivingEntity>> par0) {
+		if(par0.getEntity() instanceof PlayerEntity) {
+			PlayerEntity var0 = (PlayerEntity)par0.getEntity();
+			
+			try {
+				if(!var0.isInvisible()) {
+					Display var1 = Entitled.PROXY.getMap().getOrDefault(var0.getUniqueID(), Display.make("", 0xFFFFFF));
+					
+					if(var1.getName().equals("")) return;
+					
+					renderTag(par0.getRenderer(), var0, var1.getName(), par0.getMatrixStack(), par0.getBuffers(), par0.getLight(), var1.getColour());
+				}
+			} catch(NullPointerException parE) {}
+		}
+	}
+	
+	private static <T extends Entity> void renderTag(EntityRenderer<T> par0, T par1, String par2, MatrixStack par3, IRenderTypeBuffer par4, int par5, int par6) {
+		double var0 = par0.getRenderManager().squareDistanceTo(par1);
+		
+		if(!(var0 > 4096)) {
+			
+		}
+	}
+	
+	/** Tests to see if LShift or RShift is being pressed. */
+	private static boolean isShiftDown() {
+		return InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), 340) || InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), 344);
 	}
 }

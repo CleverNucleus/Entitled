@@ -83,7 +83,7 @@ public class NameTagRecipe extends SpecialRecipe {
 			CompoundNBT var2 = new CompoundNBT();
 			
 			var0.write(var2);
-			var1.getTag().put("Colour", var2);
+			var1.getTag().put("colour", var2);
 			
 			return var1;
 		}

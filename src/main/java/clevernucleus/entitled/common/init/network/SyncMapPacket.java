@@ -5,25 +5,24 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 
 import clevernucleus.entitled.common.Entitled;
-import clevernucleus.entitled.common.init.Registry;
-import net.minecraft.entity.player.PlayerEntity;
+import clevernucleus.entitled.common.util.Util;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 /**
- * Network packet responsible for syncing server capability to the client.
+ * Network packet responsible for syncing server entity display data to the client.
  */
-public class SyncTagPacket {
+public class SyncMapPacket {
 	private CompoundNBT tag;
 	
-	public SyncTagPacket() {}
+	public SyncMapPacket() {}
 	
 	/**
 	 * Constructor.
 	 * @param par0 Compound tag to send.
 	 */
-	public SyncTagPacket(final @Nonnull CompoundNBT par0) {
+	public SyncMapPacket(final @Nonnull CompoundNBT par0) {
 		this.tag = par0;
 	}
 	
@@ -32,7 +31,7 @@ public class SyncTagPacket {
 	 * @param par0 Input packet.
 	 * @param par1 Input buffer
 	 */
-	public static void encode(SyncTagPacket par0, PacketBuffer par1) {
+	public static void encode(SyncMapPacket par0, PacketBuffer par1) {
 		par1.writeCompoundTag(par0.tag);
 	}
 	
@@ -41,8 +40,8 @@ public class SyncTagPacket {
 	 * @param par0 Input buffer.
 	 * @return A new Packet instance.
 	 */
-	public static SyncTagPacket decode(PacketBuffer par0) {
-		return new SyncTagPacket(par0.readCompoundTag());
+	public static SyncMapPacket decode(PacketBuffer par0) {
+		return new SyncMapPacket(par0.readCompoundTag());
 	}
 	
 	/**
@@ -50,16 +49,12 @@ public class SyncTagPacket {
 	 * @param par0 Packet input.
 	 * @param par1 Network context.
 	 */
-	public static void handle(SyncTagPacket par0, Supplier<NetworkEvent.Context> par1) {
+	public static void handle(SyncMapPacket par0, Supplier<NetworkEvent.Context> par1) {
 		if(par1.get().getDirection().getReceptionSide().isClient()) {
 			par1.get().enqueueWork(() -> {
-				PlayerEntity var0 = Entitled.PROXY.clientPlayer();
+				if(par0.tag == null) return;
 				
-				if(var0 == null || par0.tag == null) return;
-				
-				var0.getCapability(Registry.TAG, null).ifPresent(var -> {
-					var.deserializeNBT(par0.tag);
-				});
+				Entitled.PROXY.setMap(Util.fromTagList(par0.tag));
 			});
 			
 			par1.get().setPacketHandled(true);

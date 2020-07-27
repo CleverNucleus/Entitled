@@ -5,13 +5,17 @@ import java.util.Objects;
 import clevernucleus.entitled.common.Entitled;
 import clevernucleus.entitled.common.init.Registry;
 import clevernucleus.entitled.common.init.capability.CapabilityProvider;
+import clevernucleus.entitled.common.init.network.SyncMapPacket;
 import clevernucleus.entitled.common.init.network.SyncTagPacket;
+import clevernucleus.entitled.common.util.Util;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -23,6 +27,9 @@ import net.minecraftforge.fml.network.NetworkDirection;
 @Mod.EventBusSubscriber(modid = Entitled.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class CommonEvents {
 	
+	/** Server player tag. */
+	private static CompoundNBT tag = new CompoundNBT();
+	
 	/**
 	 * Syncs the tag capability of the input player from the server to the client. 
 	 * @param par0 Input player.
@@ -33,6 +40,30 @@ public class CommonEvents {
 		par0.getCapability(Registry.TAG, null).ifPresent(var -> {
 			Registry.NETWORK.sendTo(new SyncTagPacket(var.serializeNBT()), ((ServerPlayerEntity)par0).connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
 		});
+		
+		if(tag != null) {
+			Registry.NETWORK.sendTo(new SyncMapPacket(tag), ((ServerPlayerEntity)par0).connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+		}
+	}
+	
+	/**
+	 * Event ticking the players in the world.
+	 * @param par0
+	 */
+	@SubscribeEvent
+    public static void onPlayerTick(net.minecraftforge.event.TickEvent.PlayerTickEvent par0) {
+		if(!par0.player.world.isRemote && par0.phase == net.minecraftforge.event.TickEvent.PlayerTickEvent.Phase.END) {
+			CompoundNBT var0 = new CompoundNBT();
+			ListNBT var1 = new ListNBT();
+			
+			for(PlayerEntity var2 : par0.player.world.getServer().getPlayerList().getPlayers()) {
+				var1.add(Util.fromPlayer(var2));
+			}
+			
+			var0.put("tag", var1);
+			
+			tag = var0;
+		}
 	}
 	
 	/**
@@ -56,8 +87,6 @@ public class CommonEvents {
         			var0.world.addEntity(var4);
         			var2.clear();
         		}
-        		
-        		syncTag(par0.getPlayer());
         	});
     	}
     }
