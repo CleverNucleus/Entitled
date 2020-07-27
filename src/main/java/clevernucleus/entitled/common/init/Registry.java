@@ -6,8 +6,8 @@ import javax.annotation.Nonnull;
 
 import clevernucleus.entitled.common.Entitled;
 import clevernucleus.entitled.common.init.capability.ITag;
+import clevernucleus.entitled.common.init.capability.SyncTagPacket;
 import clevernucleus.entitled.common.init.capability.TagHandler;
-import clevernucleus.entitled.common.init.network.*;
 import clevernucleus.entitled.common.util.NameTagRecipe;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.crafting.IRecipe;
@@ -78,7 +78,6 @@ public class Registry {
 		}, TagHandler::new);
 		
 		NETWORK.registerMessage(0, SyncTagPacket.class, SyncTagPacket::encode, SyncTagPacket::decode, SyncTagPacket::handle);
-		NETWORK.registerMessage(1, SyncMapPacket.class, SyncMapPacket::encode, SyncMapPacket::decode, SyncMapPacket::handle);
 	}
 	
 	/**

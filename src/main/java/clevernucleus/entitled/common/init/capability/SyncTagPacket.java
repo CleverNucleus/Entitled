@@ -1,18 +1,17 @@
-package clevernucleus.entitled.common.init.network;
+package clevernucleus.entitled.common.init.capability;
 
 import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
 
 import clevernucleus.entitled.common.Entitled;
-import clevernucleus.entitled.common.init.Registry;
-import net.minecraft.entity.player.PlayerEntity;
+import clevernucleus.entitled.common.util.Util;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 /**
- * Network packet responsible for syncing server capability to the client.
+ * Network packet responsible for syncing server entity display data to the client.
  */
 public class SyncTagPacket {
 	private CompoundNBT tag;
@@ -53,13 +52,9 @@ public class SyncTagPacket {
 	public static void handle(SyncTagPacket par0, Supplier<NetworkEvent.Context> par1) {
 		if(par1.get().getDirection().getReceptionSide().isClient()) {
 			par1.get().enqueueWork(() -> {
-				PlayerEntity var0 = Entitled.PROXY.clientPlayer();
+				if(par0.tag == null) return;
 				
-				if(var0 == null || par0.tag == null) return;
-				
-				var0.getCapability(Registry.TAG, null).ifPresent(var -> {
-					var.deserializeNBT(par0.tag);
-				});
+				Entitled.PROXY.setMap(Util.fromTagList(par0.tag));
 			});
 			
 			par1.get().setPacketHandled(true);

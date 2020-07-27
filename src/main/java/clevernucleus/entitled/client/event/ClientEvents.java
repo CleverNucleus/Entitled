@@ -5,7 +5,9 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import clevernucleus.entitled.common.Entitled;
 import clevernucleus.entitled.common.util.Display;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.util.InputMappings;
@@ -45,6 +47,10 @@ public class ClientEvents {
 					ItemStack var2 = ItemStack.read(var1);
 					
 					par0.getToolTip().add(new StringTextComponent(TextFormatting.GRAY + " -" + var2.getDisplayName().getFormattedText()));
+				} else {
+					ItemStack var1 = new ItemStack(Items.WHITE_DYE);
+					
+					par0.getToolTip().add(new StringTextComponent(TextFormatting.GRAY + " -" + var1.getDisplayName().getFormattedText()));
 				}
 			} else {
 				ItemStack var1 = new ItemStack(Items.WHITE_DYE);
@@ -79,7 +85,30 @@ public class ClientEvents {
 		double var0 = par0.getRenderManager().squareDistanceTo(par1);
 		
 		if(!(var0 > 4096)) {
+			boolean var1 = !par1.isSneaking();
+			float var2 = par1.getHeight() + 0.3F;
 			
+			par3.push();
+			par3.translate(0.0D, (double)var2, 0.0D);
+			par3.rotate(par0.getRenderManager().getCameraOrientation());
+			par3.scale(-0.025F, -0.025F, -0.025F);
+			
+			Matrix4f var3 = par3.getLast().getMatrix();
+			
+			float var4 = Minecraft.getInstance().gameSettings.getTextBackgroundOpacity(0.25F);
+			int var5 = (int)(var4 * 255F) << 24;
+			
+			FontRenderer var6 = par0.getFontRendererFromRenderManager();
+			
+			float var7 = (float)(-var6.getStringWidth(par2) / 2);
+			
+			var6.renderString(par2, var7, 0F, par6, false, var3, par4, var1, var5, par5);
+			
+			if(var1) {
+				var6.renderString(par2, var7, 0F, par6, false, var3, par4, false, 0, par5);
+			}
+			
+			par3.pop();
 		}
 	}
 	

@@ -28,9 +28,18 @@ public class TagHandler implements ITag {
 		return Math.min(this.getSlotLimit(par0), par1.getMaxStackSize());
     }
 	
+	/**
+	 * Fired when a change in the inventory is detected. Syncs to the server.
+	 * @param par0 Slot index.
+	 */
+	public void onContentsChanged(int par0) {
+		
+	}
+	
 	@Override
 	public void setStackInSlot(final int par0, @Nonnull ItemStack par1) {
         this.stack.set(0, par1);
+        this.onContentsChanged(0);
 	}
 	
 	@Override
@@ -69,6 +78,8 @@ public class TagHandler implements ITag {
             } else {
             	var0.grow(var2 ? var1 : par1.getCount());
             }
+        	
+        	this.onContentsChanged(0);
         }
         
         return var2 ? ItemHandlerHelper.copyStackWithSize(par1, par1.getCount() - var1) : ItemStack.EMPTY;
@@ -88,6 +99,7 @@ public class TagHandler implements ITag {
         if(var0.getCount() <= var1) {
         	if(!par2) {
         		this.stack.set(par0, ItemStack.EMPTY);
+        		this.onContentsChanged(0);
         		
         		return var0;
             } else {
@@ -96,6 +108,7 @@ public class TagHandler implements ITag {
         } else {
         	if(!par2) {
         		this.stack.set(par0, ItemHandlerHelper.copyStackWithSize(var0, var0.getCount() - var1));
+        		this.onContentsChanged(0);
             }
         	
             return ItemHandlerHelper.copyStackWithSize(var0, var1);
