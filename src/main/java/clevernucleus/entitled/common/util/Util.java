@@ -3,6 +3,7 @@ package clevernucleus.entitled.common.util;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import clevernucleus.entitled.common.init.Registry;
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,6 +16,33 @@ import net.minecraft.nbt.ListNBT;
  * Holder for useful methods.
  */
 public class Util {
+	
+	/**
+	 * Creates a new Map.
+	 * @param par0 The input function will be applied to the output map.
+	 * @return A new HashMap.
+	 */
+	public static <K, V> Map<K, V> map(final Consumer<Map<K, V>> par0) {
+		Map<K, V> var0 = new HashMap<K, V>();
+		
+		par0.accept(var0);
+		
+		return var0;
+	}
+	
+	/**
+	 * Allows for the safe usage of the input stack's nbt compound.
+	 * @param par0 Input stack.
+	 * @param par1 Compound usage.
+	 */
+	public static void safeTag(ItemStack par0, final Consumer<CompoundNBT> par1) {
+		if(par0.isEmpty()) return;
+		if(!par0.hasTag()) {
+			par0.setTag(new CompoundNBT());
+		}
+		
+		par1.accept(par0.getTag());
+	}
 	
 	/**
 	 * Safely searches through the players tag capability for name tags and colour data.

@@ -1,0 +1,13 @@
+{
+	"message.entitled.help": "%s/entitled %sneeds more arguments!",
+	"message.entitled.disallowed": "%sYou do not have permission to use a %s.",
+	"message.entitled.colour": "%sSet %s%s%s's nametag color to %s.",
+	"message.entitled.unknown": "%s%s%s is not a valid color.",
+	"message.entitled.lockable": "%sCannot lock/unlock %s%s%s.",
+	"message.entitled.unlocked": "%sUnlocked %s%s%s.",
+	"message.entitled.locked": "%sLocked %s%s%s.",
+	"message.entitled.empty": "%s%s%s does not have a nametag equipped.",
+	"message.entitled.error": "%sCould not find %s%s%s.",
+	"message.entitled.clear": "%sCleared %s%s%s's nametag.",
+	"message.entitled.display": "%sSet %s%s%s's nametag to '%s%s%s' (%s)."
+}
