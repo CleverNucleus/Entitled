@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[34,)"
+loaderVersion="[33,)"
 license="MIT License"
 
 [[mods]]
@@ -18,13 +18,13 @@ Allows the player to use a nametag as a title for themselves, which is displayed
 [[dependencies.entitled]]
     modId="forge"
     mandatory=true
-    versionRange="[34,)"
+    versionRange="[33,)"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.entitled]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.16.3]"
+    versionRange="[1.16.2]"
     ordering="NONE"
     side="BOTH"
