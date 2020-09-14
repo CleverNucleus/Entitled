@@ -58,6 +58,7 @@ public class CommonEvents {
         			
         			return;
         		}
+        		
         		if(var2.isEmpty() && var1.hasTag()) {
         			var2.setStackInSlot(0, var1.copy());
     				var1.shrink(1);
