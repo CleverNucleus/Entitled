@@ -1,10 +1,10 @@
 modLoader="javafml"
-loaderVersion="[33,)"
+loaderVersion="[34,)"
 license="MIT License"
 
 [[mods]]
 modId="entitled"
-version="1.2.0"
+version="${file.jarVersion}"
 displayName="Entitled"
 displayURL="https://github.com/CleverNucleus/Entitled"
 logoFile="logo.png"
@@ -18,13 +18,13 @@ Allows the player to use a nametag as a title for themselves, which is displayed
 [[dependencies.entitled]]
     modId="forge"
     mandatory=true
-    versionRange="[33,)"
+    versionRange="[34,)"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.entitled]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.16.2]"
+    versionRange="[1.16.3]"
     ordering="NONE"
     side="BOTH"
