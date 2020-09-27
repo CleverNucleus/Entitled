@@ -4,7 +4,7 @@ license="MIT License"
 
 [[mods]]
 modId="entitled"
-version="${file.jarVersion}"
+version="1.2.1"
 displayName="Entitled"
 displayURL="https://github.com/CleverNucleus/Entitled"
 logoFile="logo.png"
