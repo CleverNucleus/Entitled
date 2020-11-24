@@ -51,7 +51,7 @@ public class NameTagRecipe extends SpecialRecipe {
 		boolean var1 = false;
 		
 		for(Item var : var0) {
-			if(Tags.Items.DYES.func_230235_a_(var)) {
+			if(Tags.Items.DYES.contains(var)) {
 				var1 = (var0.contains(Items.NAME_TAG) && var0.size() == 2);
 				
 				break;
@@ -68,7 +68,7 @@ public class NameTagRecipe extends SpecialRecipe {
 		for(int var = 0; var < par0.getSizeInventory(); var++) {
 			ItemStack var2 = par0.getStackInSlot(var);
 			
-			if(Tags.Items.DYES.func_230235_a_(var2.getItem())) {
+			if(Tags.Items.DYES.contains(var2.getItem())) {
 				var0 = var2;
 			} else if(var2.getItem() == Items.NAME_TAG) {
 				var1 = var2.copy();
