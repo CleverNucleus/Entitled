@@ -31,10 +31,10 @@ public class NameTagRecipe extends SpecialRecipe {
 	 * @return A list containing the inventory's contents.
 	 */
 	private NonNullList<ItemStack> wrapInv(final IInventory par0) {
-		NonNullList<ItemStack> var0 = NonNullList.withSize(par0.getSizeInventory(), ItemStack.EMPTY);
+		NonNullList<ItemStack> var0 = NonNullList.withSize(par0.getContainerSize(), ItemStack.EMPTY);
 		
-		for(int var = 0; var < par0.getSizeInventory(); var++) {
-			ItemStack var1 = par0.getStackInSlot(var);
+		for(int var = 0; var < par0.getContainerSize(); var++) {
+			ItemStack var1 = par0.getItem(var);
 			
 			var0.set(var, var1);
 		}
@@ -44,7 +44,7 @@ public class NameTagRecipe extends SpecialRecipe {
 	
 	@Override
 	public boolean matches(CraftingInventory par0, World par1) {
-		if(!this.canFit(par0.getWidth(), par0.getHeight())) return false;
+		if(!this.canCraftInDimensions(par0.getWidth(), par0.getHeight())) return false;
 		
 		List<Item> var0 = wrapInv(par0).stream().filter(var -> !var.isEmpty()).map(ItemStack::getItem).collect(Collectors.toList());
 		
@@ -62,11 +62,11 @@ public class NameTagRecipe extends SpecialRecipe {
 	}
 	
 	@Override
-	public ItemStack getCraftingResult(CraftingInventory par0) {
+	public ItemStack assemble(CraftingInventory par0) {
 		ItemStack var0 = ItemStack.EMPTY, var1 = ItemStack.EMPTY;
 		
-		for(int var = 0; var < par0.getSizeInventory(); var++) {
-			ItemStack var2 = par0.getStackInSlot(var);
+		for(int var = 0; var < par0.getContainerSize(); var++) {
+			ItemStack var2 = par0.getItem(var);
 			
 			if(Tags.Items.DYES.contains(var2.getItem())) {
 				var0 = var2;
@@ -82,7 +82,7 @@ public class NameTagRecipe extends SpecialRecipe {
 			
 			CompoundNBT var2 = new CompoundNBT();
 			
-			var0.write(var2);
+			var0.save(var2);
 			var1.getTag().put("colour", var2);
 			
 			return var1;
@@ -92,7 +92,7 @@ public class NameTagRecipe extends SpecialRecipe {
 	}
 	
 	@Override
-	public boolean canFit(int par0, int par1) {
+	public boolean canCraftInDimensions(int par0, int par1) {
 		return par0 >= 2 && par1 >= 2;
 	}
 	

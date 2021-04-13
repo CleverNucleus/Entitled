@@ -52,12 +52,12 @@ public class TitleCommand {
 	
 	/** Error procedure. */
 	private static boolean error(final CommandContext<CommandSource> par0, final PlayerEntity par1) {
-		if(par1.world.isRemote) return true;
+		if(par1.level.isClientSide) return true;
 		
 		PlayerList var0 = par0.getSource().getServer().getPlayerList();
 		
 		if(!var0.getPlayers().contains(par1)) {
-			par0.getSource().sendFeedback(new TranslationTextComponent("message.entitled.error", TextFormatting.GRAY, TextFormatting.RED, par1.getDisplayName(), TextFormatting.GRAY), true);
+			par0.getSource().sendSuccess(new TranslationTextComponent("message.entitled.error", TextFormatting.GRAY, TextFormatting.RED, par1.getDisplayName(), TextFormatting.GRAY), true);
 			
 			return true;
 		}
@@ -67,7 +67,7 @@ public class TitleCommand {
 	
 	/** A partially formed entitled command. */
 	private static int run(CommandContext<CommandSource> par0) throws CommandSyntaxException {
-        par0.getSource().sendFeedback(new TranslationTextComponent("message.entitled.help", TextFormatting.RED, TextFormatting.GRAY), true);
+        par0.getSource().sendSuccess(new TranslationTextComponent("message.entitled.help", TextFormatting.RED, TextFormatting.GRAY), true);
         
         return 1;
     }
@@ -75,8 +75,8 @@ public class TitleCommand {
 	/** Locking command */
 	private static int run(CommandContext<CommandSource> par0, PlayerEntity par1, boolean par2) throws CommandSyntaxException {
 		if(error(par0, par1)) return 1;
-		if(par1.hasPermissionLevel(2)) {
-			par0.getSource().sendFeedback(new TranslationTextComponent("message.entitled.lockable", TextFormatting.GRAY, TextFormatting.RED, par1.getDisplayName(), TextFormatting.GRAY), true);
+		if(par1.hasPermissions(2)) {
+			par0.getSource().sendSuccess(new TranslationTextComponent("message.entitled.lockable", TextFormatting.GRAY, TextFormatting.RED, par1.getDisplayName(), TextFormatting.GRAY), true);
 			
 			return 1;
 		}
@@ -85,9 +85,9 @@ public class TitleCommand {
 			var.setLocked(par2);
 			
 			if(par2) {
-				par0.getSource().sendFeedback(new TranslationTextComponent("message.entitled.locked", TextFormatting.GRAY, TextFormatting.RED, par1.getDisplayName(), TextFormatting.GRAY), true);
+				par0.getSource().sendSuccess(new TranslationTextComponent("message.entitled.locked", TextFormatting.GRAY, TextFormatting.RED, par1.getDisplayName(), TextFormatting.GRAY), true);
 			} else {
-				par0.getSource().sendFeedback(new TranslationTextComponent("message.entitled.unlocked", TextFormatting.GRAY, TextFormatting.RED, par1.getDisplayName(), TextFormatting.GRAY), true);
+				par0.getSource().sendSuccess(new TranslationTextComponent("message.entitled.unlocked", TextFormatting.GRAY, TextFormatting.RED, par1.getDisplayName(), TextFormatting.GRAY), true);
 			}
 		});
         
@@ -105,7 +105,7 @@ public class TitleCommand {
 			
 			var.clear();
 			var.sync(par1);
-			par0.getSource().sendFeedback(new TranslationTextComponent("message.entitled.clear", TextFormatting.GRAY, TextFormatting.RED, par1.getDisplayName(), TextFormatting.GRAY), true);
+			par0.getSource().sendSuccess(new TranslationTextComponent("message.entitled.clear", TextFormatting.GRAY, TextFormatting.RED, par1.getDisplayName(), TextFormatting.GRAY), true);
 		});
         
         return 1;
@@ -115,25 +115,25 @@ public class TitleCommand {
 	private static int run(CommandContext<CommandSource> par0, PlayerEntity par1, String par2) throws CommandSyntaxException {
 		if(error(par0, par1)) return 1;
 		if(!COLOUR_MAP.containsKey(par2)) {
-			par0.getSource().sendFeedback(new TranslationTextComponent("message.entitled.unknown", TextFormatting.RED, par2, TextFormatting.GRAY), true);
+			par0.getSource().sendSuccess(new TranslationTextComponent("message.entitled.unknown", TextFormatting.RED, par2, TextFormatting.GRAY), true);
 	        
 			return 1;
 		}
 		
 		par1.getCapability(Registry.TAG, null).ifPresent(var -> {
 			if(var.isEmpty()) {
-				par0.getSource().sendFeedback(new TranslationTextComponent("message.entitled.empty", TextFormatting.RED, par1.getDisplayName(), TextFormatting.GRAY), true);
+				par0.getSource().sendSuccess(new TranslationTextComponent("message.entitled.empty", TextFormatting.RED, par1.getDisplayName(), TextFormatting.GRAY), true);
 			} else {
 				Util.safeTag(var.getStackInSlot(0), var0 -> {
 					ItemStack var1 = new ItemStack(COLOUR_MAP.get(par2));
 					CompoundNBT var2 = new CompoundNBT();
 					
-					var1.write(var2);
+					var1.save(var2);
 					var0.put("colour", var2);
 				});
 				
 				var.sync(par1);
-				par0.getSource().sendFeedback(new TranslationTextComponent("message.entitled.colour", TextFormatting.GRAY, TextFormatting.RED, par1.getDisplayName(), TextFormatting.GRAY, par2), true);
+				par0.getSource().sendSuccess(new TranslationTextComponent("message.entitled.colour", TextFormatting.GRAY, TextFormatting.RED, par1.getDisplayName(), TextFormatting.GRAY, par2), true);
 			}
 		});
         
@@ -144,7 +144,7 @@ public class TitleCommand {
 	private static int run(CommandContext<CommandSource> par0, PlayerEntity par1, String par2, ITextComponent par3) throws CommandSyntaxException {
 		if(error(par0, par1)) return 1;
 		if(!COLOUR_MAP.containsKey(par2)) {
-			par0.getSource().sendFeedback(new TranslationTextComponent("message.entitled.unknown", TextFormatting.RED, par2, TextFormatting.GRAY), true);
+			par0.getSource().sendSuccess(new TranslationTextComponent("message.entitled.unknown", TextFormatting.RED, par2, TextFormatting.GRAY), true);
 	        
 			return 1;
 		}
@@ -155,14 +155,14 @@ public class TitleCommand {
 				ItemStack var2 = new ItemStack(COLOUR_MAP.get(par2));
 				CompoundNBT var3 = new CompoundNBT();
 				
-				var2.write(var3);
+				var2.save(var3);
 				var1.put("colour", var3);
 			});
 			
-			var0.setDisplayName(par3);
+			var0.setHoverName(par3);
 			var.setStackInSlot(0, var0);
 			var.sync(par1);
-			par0.getSource().sendFeedback(new TranslationTextComponent("message.entitled.display", TextFormatting.GRAY, TextFormatting.RED, par1.getDisplayName(), TextFormatting.GRAY, TextFormatting.WHITE, par3, TextFormatting.GRAY, par2), true);
+			par0.getSource().sendSuccess(new TranslationTextComponent("message.entitled.display", TextFormatting.GRAY, TextFormatting.RED, par1.getDisplayName(), TextFormatting.GRAY, TextFormatting.WHITE, par3, TextFormatting.GRAY, par2), true);
 		});
 		
         return 1;
@@ -174,7 +174,7 @@ public class TitleCommand {
 	 */
 	public static void register(CommandDispatcher<CommandSource> par0) {
 		par0.register(Commands.literal(Entitled.MODID).requires(var -> {
-			return var.hasPermissionLevel(2);
+			return var.hasPermission(2);
 		}).executes(var -> {
 			return run(var);
 		}).then(Commands.argument("player", EntityArgument.player()).suggests((var0, var1) -> {

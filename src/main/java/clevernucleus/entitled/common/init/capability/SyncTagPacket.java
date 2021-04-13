@@ -32,7 +32,7 @@ public class SyncTagPacket {
 	 * @param par1 Input buffer
 	 */
 	public static void encode(SyncTagPacket par0, PacketBuffer par1) {
-		par1.writeCompoundTag(par0.tag);
+		par1.writeNbt(par0.tag);
 	}
 	
 	/**
@@ -41,7 +41,7 @@ public class SyncTagPacket {
 	 * @return A new Packet instance.
 	 */
 	public static SyncTagPacket decode(PacketBuffer par0) {
-		return new SyncTagPacket(par0.readCompoundTag());
+		return new SyncTagPacket(par0.readNbt());
 	}
 	
 	/**

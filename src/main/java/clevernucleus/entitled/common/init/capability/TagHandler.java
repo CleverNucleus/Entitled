@@ -137,7 +137,7 @@ public class TagHandler implements ITag {
 		CompoundNBT var0 = new CompoundNBT();
 		CompoundNBT var1 = new CompoundNBT();
 		
-        this.stack.get(0).write(var0);
+        this.stack.get(0).save(var0);
         var1.put("Tag", var0);
         var1.putBoolean("Locked", this.locked);
         
@@ -148,7 +148,7 @@ public class TagHandler implements ITag {
 	public void deserializeNBT(CompoundNBT par0) {
 		if(!par0.contains("Tag") || !par0.contains("Locked")) return;
 		
-		this.stack.set(0, ItemStack.read(par0.getCompound("Tag")));
+		this.stack.set(0, ItemStack.of(par0.getCompound("Tag")));
 		this.locked = par0.getBoolean("Locked");
 	}
 	
@@ -170,27 +170,27 @@ public class TagHandler implements ITag {
 	@Override
 	public void drop(final PlayerEntity par0) {
 		ItemStack var0 = this.getStackInSlot(0);
-		ItemEntity var1 = new ItemEntity(par0.world, par0.prevPosX, par0.prevPosY, par0.prevPosZ, var0);
+		ItemEntity var1 = new ItemEntity(par0.level, par0.xo, par0.yo, par0.zo, var0);
 		
-		par0.world.addEntity(var1);
+		par0.level.addFreshEntity(var1);
 	}
 	
 	@Override
 	public void sync(final PlayerEntity par0) {
-		if(par0.world.isRemote) return;
+		if(par0.level.isClientSide) return;
 		
 		CompoundNBT var0 = new CompoundNBT();
 		ListNBT var1 = new ListNBT();
 		
-		for(PlayerEntity var2 : par0.world.getServer().getPlayerList().getPlayers()) {
+		for(PlayerEntity var2 : par0.level.getServer().getPlayerList().getPlayers()) {
 			var1.add(Util.fromPlayer(var2));
 		}
 		
 		var0.put("tag", var1);
 		
 		if(var0 != null) {
-			par0.world.getServer().getPlayerList().getPlayers().forEach(var -> {
-				Registry.NETWORK.sendTo(new SyncTagPacket(var0), ((ServerPlayerEntity)var).connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+			par0.level.getServer().getPlayerList().getPlayers().forEach(var -> {
+				Registry.NETWORK.sendTo(new SyncTagPacket(var0), ((ServerPlayerEntity)var).connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
 			});
 		}
 	}

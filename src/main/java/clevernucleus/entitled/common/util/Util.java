@@ -54,7 +54,7 @@ public class Util {
 		
 		CompoundNBT var0 = new CompoundNBT();
 		
-		var0.putUniqueId("UUID", par0.getUniqueID());
+		var0.putUUID("UUID", par0.getUUID());
 		par0.getCapability(Registry.TAG, null).ifPresent(var1 -> {
 			String var2 = "";
 			int var3 = 0xFFFFFF;
@@ -70,7 +70,7 @@ public class Util {
 					}
 					
 					if(var4.getTag().contains("colour")) {
-						ItemStack var5 = ItemStack.read(var4.getTag().getCompound("colour"));
+						ItemStack var5 = ItemStack.of(var4.getTag().getCompound("colour"));
 						
 						var3 = DyeColor.getColor(var5).getColorValue();
 					}
@@ -96,7 +96,7 @@ public class Util {
 		
 		for(int var = 0; var < var0.size(); var++) {
 			CompoundNBT var2 = var0.getCompound(var);
-			UUID var3 = var2.getUniqueId("UUID");
+			UUID var3 = var2.getUUID("UUID");
 			Display var4 = Display.read(var2);
 			
 			var1.put(var3, var4);

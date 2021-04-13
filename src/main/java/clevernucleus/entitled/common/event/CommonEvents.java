@@ -28,7 +28,7 @@ public class CommonEvents {
 	 */
 	private static void syncTag(final @Nonnull PlayerEntity par0) {
 		if(par0 == null) return;
-		if(par0.world.isRemote) return;
+		if(par0.level.isClientSide) return;
 		
 		par0.getCapability(Registry.TAG, null).ifPresent(var -> {
 			var.sync(par0);
@@ -37,7 +37,7 @@ public class CommonEvents {
 	
 	@SubscribeEvent
     public static void serverLoad(final FMLServerStartingEvent par0) {
-        TitleCommand.register(par0.getServer().getCommandManager().getDispatcher());
+        TitleCommand.register(par0.getServer().getCommands().getDispatcher());
     }
 	
 	/**
@@ -49,12 +49,12 @@ public class CommonEvents {
     	PlayerEntity var0 = par0.getPlayer();
     	ItemStack var1 = par0.getItemStack();
     	
-    	if(!var0.world.isRemote && var0.isCrouching() && (var1.getItem() == Items.NAME_TAG)) {
+    	if(!var0.level.isClientSide && var0.isCrouching() && (var1.getItem() == Items.NAME_TAG)) {
         	var0.getCapability(Registry.TAG, null).ifPresent(var2 -> {
-        		if(var2.locked() && !var0.hasPermissionLevel(2)) {
+        		if(var2.locked() && !var0.hasPermissions(2)) {
         			ItemStack var3 = new ItemStack(Items.NAME_TAG);
         			
-        			var0.sendMessage(new TranslationTextComponent("message.entitled.disallowed", TextFormatting.RED, var3.getDisplayName()), var0.getUniqueID());
+        			var0.sendMessage(new TranslationTextComponent("message.entitled.disallowed", TextFormatting.RED, var3.getDisplayName()), var0.getUUID());
         			
         			return;
         		}
@@ -91,7 +91,7 @@ public class CommonEvents {
     public static void onPlayerEntityCloned(net.minecraftforge.event.entity.player.PlayerEvent.Clone par0) {
 		PlayerEntity var0 = par0.getPlayer();
 		
-		if(var0.world.isRemote) return;
+		if(var0.level.isClientSide) return;
 		
 		try {
 			Registry.TAG_FROM_PLAYER.apply(var0).ifPresent(var1 -> {
